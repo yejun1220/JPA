@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 public class JpaMain {
 
@@ -26,14 +25,13 @@ public class JpaMain {
             // 회원 저장
             Member member = new Member();
             member.setUsername("member1");
-            member.setTeamId(team.getId()); // 단방향 연관간계 설정, 참조 저장
+            member.setTeam(team); // 단방향 연관간계 설정, 참조 저장
             em.persist(member);
 
+            Member findMember = em.find(Member.class, member.getId());
 
-//            Member findMember = em.find(Member.class, member.getId());
-//
-//            Team findTeam = findMember.getTeam();
-//            System.out.println("findTeam = " + findTeam.getName());
+            Team findTeam = findMember.getTeam();
+            System.out.println("findTeam = " + findTeam.getName());
 
             tx.commit();
         }
