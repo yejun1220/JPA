@@ -12,7 +12,7 @@ public abstract class BasicEntity {
     private LocalDateTime createdDate;
     @Column(name = "UPDATE_MEMBER")
     private String lastModifiedBy;
-    private LocalDateTime lastModifedDate;
+    private LocalDateTime lastModifiedDate;
 
     public String getCreatedBy() {
         return createdBy;
@@ -38,11 +38,11 @@ public abstract class BasicEntity {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public LocalDateTime getLastModifedDate() {
-        return lastModifedDate;
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setLastModifedDate(LocalDateTime lastModifedDate) {
-        this.lastModifedDate = lastModifedDate;
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }
