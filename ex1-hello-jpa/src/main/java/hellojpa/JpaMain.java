@@ -30,23 +30,7 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            Member m1 = em.find(Member.class, member1.getId());
-            System.out.println("m1 = " + m1.getClass());
 
-            Member reference = em.getReference(Member.class, member2.getId());
-            System.out.println("reference = " + reference.getClass());
-            System.out.println("a == a: " + (m1 == reference));
-            System.out.println("isLoad = " + emf.getPersistenceUnitUtil().isLoaded(reference));
-            Hibernate.initialize(reference); // 강제 프록시 초기화
-            System.out.println("isLoad = " + emf.getPersistenceUnitUtil().isLoaded(reference));
-//            Member findMember = em.getReference(Member.class, member.getId()); // 실제 사용될 때 insert문이 나간다.
-//            System.out.println("findMember.username = " + findMember.getUsername()); // 사용 전에는 가짜 proxy를 반환해주고 사용할 때 target을 지정한다.
-
-            em.clear();
-            em.close();
-            em.detach(reference);
-
-            reference.getUsername();
 
             tx.commit();
         }
