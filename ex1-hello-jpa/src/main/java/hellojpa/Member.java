@@ -14,8 +14,9 @@ public class Member {
     @Column(name = "USERNAME")
     private String username;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+//    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) // 멤버 데이터 삽입 시 팀은 변경 및 삽입하지 않는다.
     private Team team;
 
     @OneToMany(mappedBy = "member")
