@@ -13,7 +13,7 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL) // Cascade는 자식객체도 같이 Persist 등을 할 때 쓰인다.
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true) // Cascade는 자식객체도 같이 Persist 등을 할 때 쓰인다.
     private List<Child> childList = new ArrayList<>();
 
     public void addChild(Child child) {
