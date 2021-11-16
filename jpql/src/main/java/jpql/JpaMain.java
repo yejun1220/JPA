@@ -18,46 +18,27 @@ public class JpaMain {
 
         try {
 
-            Member member1 = new Member();
-            member1.setUsername("member1");
-            member1.setAge(10);
+            for(int i = 0; i<100; i++) {
+                Member member = new Member();
+                member.setUsername("member" + i);
+                member.setAge(i);
 
-            Member member2 = new Member();
-            member2.setUsername("member2");
-            member2.setAge(20);
-            em.persist(member1);
-            em.persist(member2);
+                Team team = new Team();
+                team.setName("team" + i);
+                em.persist(team);
 
-            System.out.println("=====================");
-
-            List<Object[]> result = em.createQuery("select m.username, m.age From Member m").getResultList(); // 배열의 한 요소가 Object 타입(엔티티)
-
-            for (Object[] objects : result) {
-                System.out.println("objects[0] = " + objects[0]);
-                System.out.println("objects[0] = " + objects[1]);
+                member.setTeam(team);
+                em.persist(member);
             }
 
-            System.out.println("=====================");
+            List<Member> result = em.createQuery("select m from Member m order by m.age desc ", Member.class)
+                    .setFirstResult(1)
+                    .setMaxResults(10)
+                    .getResultList();
 
-            Member result2 = em.createQuery("select m From Member m where m.username = :username", Member.class)
-                    .setParameter("username", member1.getUsername())
-                    .getSingleResult();
-
-            System.out.println("username.getUsername() = " + result2.getUsername());
-
-            System.out.println("=====================");
-
-            List<MemberDTO> result3 = em.createQuery("select new jpql.MemberDTO(m.username, m.age) From Member m", MemberDTO.class).getResultList();
-            MemberDTO memberDTO = result3.get(0);
-            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
-            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
-            memberDTO = result3.get(1);
-            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
-            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
-
-            for (MemberDTO dto : result3) {
-                System.out.println("dto.getUsername() = " + dto.getUsername());
-                System.out.println("dto.getAge() = " + dto.getAge());
+            System.out.println("result.size() = " + result.size());
+            for (Member member : result) {
+                System.out.println("member = " + member);
             }
 
 
