@@ -31,16 +31,54 @@ public class JpaMain {
                 em.persist(member);
             }
 
-            List<Member> result = em.createQuery("select m from Member m order by m.age desc ", Member.class)
-                    .setFirstResult(1)
-                    .setMaxResults(10)
-                    .getResultList();
+            // CASE
+            String query = "select " +
+                                "case when m.age <= 10 then '학생요금' " +
+                                "     when m.age >= 60 then '경로요금' " +
+                                "     else '일반요금' " +
+                                "end " +
+                            "from Member m";
+            List<String> result = em.createQuery(query, String.class).getResultList();
 
-            System.out.println("result.size() = " + result.size());
-            for (Member member : result) {
-                System.out.println("member = " + member);
+            for (String s : result) {
+                System.out.println("s = " + s);
             }
 
+            // COALESCE
+            Member member = new Member();
+            member.setUsername(null);
+            member.setAge(10);
+
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            member.setTeam(team);
+            em.persist(member);
+
+            List<String> result2 = em.createQuery("select coalesce(m.username, '이름 없는 회원') from Member m", String.class).getResultList();
+
+            for (String s : result2) {
+                System.out.println("s = " + s);
+            }
+
+            // NULLIF
+            Member member2 = new Member();
+            member.setUsername("관리자");
+            member.setAge(10);
+
+            Team team2 = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            member.setTeam(team);
+            em.persist(member);
+
+            List<String> result3 = em.createQuery("select nullif(m.username, '관리자') from Member m", String.class).getResultList();
+
+            for (String s : result3) {
+                System.out.println("s = " + s);
+            }
 
             tx.commit();
         }
