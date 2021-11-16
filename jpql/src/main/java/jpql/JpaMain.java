@@ -37,22 +37,7 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // 연관관계가 있을 시 (on t.name = 'team1' 조회 O)
-            // inner 조인 (inner 생략 가능)
-            List<Member> result = em.createQuery("select m from Member m inner join m.team t", Member.class).getResultList();
-
-            // outer 조인 (left 생략 가능)
-            List<Member> result2 = em.createQuery("select m from Member m left outer join m.team t ", Member.class).getResultList();
-
-            // 연관관계가 없을 시
-            // 막조인 - cross 조인 (세타 조인)
-            List<Member> result3 = em.createQuery("select m from Member m, Team t where m.username = t.name", Member.class).getResultList();
-            tx.commit();
-
-            System.out.println("result3.size() = " + result3.size());
-
-            // 막조인 - left 조인 (on member.TEAM_ID=team.id 조회 X)
-           em.createQuery("select m from Member m left join Team t on m.username = t.name");
+            em.createQuery("select (select avg(m1.age) from Member m1) as avgAge from Member m join Team t on m.username = t.name");
 
 
         }
