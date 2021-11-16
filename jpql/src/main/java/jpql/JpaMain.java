@@ -18,7 +18,7 @@ public class JpaMain {
 
         try {
 
-            for(int i = 0; i<100; i++) {
+            for(int i=0; i<2; i++) {
                 Member member = new Member();
                 member.setUsername("member" + i);
                 member.setAge(i);
@@ -27,60 +27,34 @@ public class JpaMain {
                 team.setName("team" + i);
                 em.persist(team);
 
+                member.changeTeam(team);
                 member.setTeam(team);
+
+                member.changeTeam(team);
                 em.persist(member);
             }
 
-            // CASE
-            String query = "select " +
-                                "case when m.age <= 10 then '학생요금' " +
-                                "     when m.age >= 60 then '경로요금' " +
-                                "     else '일반요금' " +
-                                "end " +
-                            "from Member m";
-            List<String> result = em.createQuery(query, String.class).getResultList();
+            em.flush();
+            em.clear();
 
-            for (String s : result) {
-                System.out.println("s = " + s);
-            }
+            // 연관관계가 있을 시 (on t.name = 'team1' 조회 O)
+            // inner 조인 (inner 생략 가능)
+            List<Member> result = em.createQuery("select m from Member m inner join m.team t", Member.class).getResultList();
 
-            // COALESCE
-            Member member = new Member();
-            member.setUsername(null);
-            member.setAge(10);
+            // outer 조인 (left 생략 가능)
+            List<Member> result2 = em.createQuery("select m from Member m left outer join m.team t ", Member.class).getResultList();
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
-
-            member.setTeam(team);
-            em.persist(member);
-
-            List<String> result2 = em.createQuery("select coalesce(m.username, '이름 없는 회원') from Member m", String.class).getResultList();
-
-            for (String s : result2) {
-                System.out.println("s = " + s);
-            }
-
-            // NULLIF
-            Member member2 = new Member();
-            member.setUsername("관리자");
-            member.setAge(10);
-
-            Team team2 = new Team();
-            team.setName("teamA");
-            em.persist(team);
-
-            member.setTeam(team);
-            em.persist(member);
-
-            List<String> result3 = em.createQuery("select nullif(m.username, '관리자') from Member m", String.class).getResultList();
-
-            for (String s : result3) {
-                System.out.println("s = " + s);
-            }
-
+            // 연관관계가 없을 시
+            // 막조인 - cross 조인 (세타 조인)
+            List<Member> result3 = em.createQuery("select m from Member m, Team t where m.username = t.name", Member.class).getResultList();
             tx.commit();
+
+            System.out.println("result3.size() = " + result3.size());
+
+            // 막조인 - left 조인 (on member.TEAM_ID=team.id 조회 X)
+           em.createQuery("select m from Member m left join Team t on m.username = t.name");
+
+
         }
         catch (Exception e) {
             tx.rollback();

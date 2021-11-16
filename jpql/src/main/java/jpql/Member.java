@@ -10,9 +10,14 @@ public class Member {
     private String username;
     private int age;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
+
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
+    }
 
     public Long getId() {
         return id;
@@ -52,7 +57,6 @@ public class Member {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", age=" + age +
-                ", team=" + team +
                 '}';
     }
 }
