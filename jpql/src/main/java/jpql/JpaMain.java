@@ -5,6 +5,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Objects;
 
 public class JpaMain {
 
@@ -38,19 +39,25 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String s = "select m.username, 'HELLO', true from Member m " +
-                       "where m.memberType = :userType " +
-                       "and m.age between 0 and 20 " +
-                       "and m.username is not null ";
-            List<Object[]> result = em.createQuery(s)
-                    .setParameter("userType", MemberType.ADMIN)
-                    .getResultList();
+            // concat 합치기
+            String query1 = "select concat('a', 'b') from Member m";
+//            String s = "select 'a' || 'b' from Member m";
+
+            // substring 자르기(2번째부터 4개)
+            String query2 = "select substring(m.username, 2, 4) from Member m";
+
+            // locate 찾기
+            String query3 = "select locate('de', 'abcdef') from Member m";
+
+            // size 반대 연관관계 사이즈 계산
+            String query4 = "select size(t.members), t.name from Team t";
+            List<Object[]> result = em.createQuery(query4).getResultList();
 
             for (Object[] objects : result) {
                 System.out.println("objects[0] = " + objects[0]);
-                System.out.println("objects[0] = " + objects[1]);
-                System.out.println("objects[0] = " + objects[2]);
+                System.out.println("objects[1] = " + objects[1]);
             }
+
 
         }
         catch (Exception e) {
