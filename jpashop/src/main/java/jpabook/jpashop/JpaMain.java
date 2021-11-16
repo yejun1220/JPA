@@ -1,5 +1,7 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.domain.Book;
+import jpabook.jpashop.domain.Item;
 import jpabook.jpashop.domain.Member;
 
 import javax.persistence.EntityManager;
@@ -22,40 +24,14 @@ public class JpaMain {
         tx.begin();
 
         try {
-            // JPQL
-            List<Member> resultList = em.createQuery("select m From Member m where m.name like '%kim%'", Member.class).getResultList();
 
-            // Criteria
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Member> query = cb.createQuery(Member.class);
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("임예준");
 
-            Root<Member> m = query.from(Member.class);
-            CriteriaQuery<Member> cq = query.select(m).where(cb.equal(m.get("name"), "kim"));
-            List<Member> resultList2 = em.createQuery(cq).getResultList();
+            em.persist(book);
 
-            // QueryDSL
-//            JPAFactoryQuery query = new JPAQueryFactory(em);
-//            QMember m = QMember.member;
-//            List<Member> list =
-//                    query.selectFrom(m)
-//                         .where(m.age.gt(18))
-//                         .orderBy(m.name.desc())
-//                         .fetch();
-
-            // 네이티브 쿼리
-            em.createNativeQuery("select MEMBER_ID, city, street, zipcode, NAME from MEMBER").getResultList();
-
-            Member member = new Member();
-            member.setName("member1");
-            em.persist(member); // DB에 데이터 아직 안들어감.
-
-            List<Member> resultList3 = em.createNativeQuery("select MEMBER_ID, city, street, zipcode, NAME from MEMBER", Member.class).getResultList();
-
-            for (Member member1 : resultList3) {
-                System.out.println("member1 = " + member1.getName());
-            }
-            // flush -> commit, query 날라갈 때 실행
-
+            List<Item> result = em.createQuery("select i from Item i where type(i) = Book", Item.class).getResultList();
             tx.commit();
         }
         catch (Exception e) {
