@@ -26,7 +26,7 @@ public class Member {
     private MemberType memberType;
     public void changeTeam(Team team) {
         this.team = team;
-        team.getMembers().add(this);
+//        team.getMembers().add(this);
     }
 
     public Long getId() {
@@ -47,6 +47,7 @@ public class Member {
 
     public void setTeam(Team team) {
         this.team = team;
+        team.getMembers().add(this);
     }
 
     public void setUsername(String username) {
