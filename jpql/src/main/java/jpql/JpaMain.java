@@ -183,8 +183,20 @@ public class JpaMain {
                 System.out.println("member = " + member);
             }
 
+            em.flush();
+            em.clear();
+
+            // 벌크 연산
+            int resultCount = em.createQuery("update Member m set m.age = 20").executeUpdate();
+
+            System.out.println("resultCount = " + resultCount);
+            em.clear();
+
+            Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("findMember.getAge() = " + findMember.getAge());
+
         }
-        catch (Exception e) {
+       catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
         }
