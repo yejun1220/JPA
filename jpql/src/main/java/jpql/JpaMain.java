@@ -157,6 +157,32 @@ public class JpaMain {
                 }
             }
 
+            em.flush();
+            em.clear();
+
+            // 엔티티 직접 사용
+            // 엔티티를 파라미터로 전달
+            String jpql1 = "select m from Member m where m = :member";
+            List resultList1 = em.createQuery(jpql1)
+                    .setParameter("member", member1)
+                    .getResultList();
+
+            String jpql2 = "select m from Member m where m.id = :memberId";
+            List resultList2 = em.createQuery(jpql2)
+                    .setParameter("memberId", member1.getId())
+                    .getResultList();
+
+            em.flush();
+            em.clear();
+
+            List<Member> result7 = em.createNamedQuery("Member.findByUsername", Member.class)
+                    .setParameter("username", "회원1")
+                    .getResultList();
+
+            for (Member member : result7) {
+                System.out.println("member = " + member);
+            }
+
         }
         catch (Exception e) {
             tx.rollback();
