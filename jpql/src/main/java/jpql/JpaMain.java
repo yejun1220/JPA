@@ -81,7 +81,7 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // 페치 조인에 별칭을 줄 수 없다.
+            // 페치 조인에 별칭을 줄 수 없다. (JPA 설계상 모두 가져오기를 바란다.)
             // 페치 조인은 관련된 모든 것을 끌고 온다.(걸러서 가져오고 싶으면 페치 조인을 쓰면 안된다.)
             String query2 = "select t from Team t join fetch t.members";
             String query2_1 = "select t from Team t join fetch t.members as m";
@@ -134,6 +134,27 @@ public class JpaMain {
             for (Object[] o : result5) {
                 System.out.println(o);
                 // 객체 두 개로 가져온다.(결과 두 개)
+            }
+
+            em.flush();
+            em.clear();
+
+            // 컬랙션 페치 조인은 페이징이 안된다. 아래처럼 해결한다.(+@BatchSize)
+            // @BatchSize를 사용하면 in 쿼리로 where 절을 여러개 받을 수 있다.
+            String query6 = "select t From Team t";
+            List<Team> result6 = em.createQuery(query6, Team.class)
+                    .setFirstResult(0)
+                    .setMaxResults(2)
+                    .getResultList();
+
+            System.out.println("result6.size() = " + result6.size());
+
+            for (Team team : result6) {
+                System.out.println("team.getName() = " + team.getName() + "|members" + team.getMembers());
+                for (Member member : team.getMembers()) {
+                    System.out.println("-> member = " + member);
+
+                }
             }
 
         }
